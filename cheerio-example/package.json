@@ -1,6 +1,10 @@
 {
   "name": "dailypup",
   "version": "1.0.0",
+  "repository" : { 
+     "type" : "git",
+     "url" : "http://github.com/arbianchi/WebscrapingTalk.git"
+   }
   "description": "cheerio webscraping example",
   "main": "dailypup.js",
   "scripts": {
