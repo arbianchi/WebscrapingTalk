@@ -1,11 +1,12 @@
 var request = require('request');
 var cheerio = require('cheerio');
+
 var pups = [];
-var results = [];
+var searchResults = [];
 
 function getPups(idx) {
-  if (idx < results.length){
-    var link = results[idx].url;
+  if (idx < searchResults.length){
+    var link = searchResults[idx];
     request(link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var $ = cheerio.load(html);
@@ -22,19 +23,18 @@ function getPups(idx) {
       }
     });
   } else {
-    console.log("PUPS", pups);
+    console.log(pups);
   }
 }
 
 request('https://raleigh.craigslist.org/search/pet', function (error, response, html) {
   if (!error && response.statusCode == 200) {
     var $ = cheerio.load(html);
-    var titles = $('.result-title').text();
     $('.result-info:contains(Puppies), .result-info:contains(puppies), .result-info:contains(Puppy), .result-info:contains(puppy)').each( function(){
-      pet = {}
-      pet.url = "https://raleigh.craigslist.org" + $( this ).find('.result-title').attr('href');
-      results.push(pet);
+      var link = "https://raleigh.craigslist.org" + $( this ).find('.result-title').attr('href');
+      searchResults.push(link);
     });
+    console.log('SEARCH RESULTS:\n', searchResults);
     getPups(0);
   }
 });
