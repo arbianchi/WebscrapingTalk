@@ -1,7 +1,0 @@
-<div id="gallery">
-    <ul id="grid">
-        <% @pups.each do |pup| %>
-            <li><%= link_to image_tag(pup.photo.url(:tiny)), image %></li>
-    <% end %>
-    </ul>
-</div>

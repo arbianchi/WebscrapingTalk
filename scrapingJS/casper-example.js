@@ -1,53 +1,46 @@
-
-// var casper = require('casper').create();
 var casper = require('casper').create({
     clientScripts:  [
-                'includes/jquery.js',      // These two scripts will be injected in remote
-                'includes/underscore.js'   // DOM on every request
-            
-    ],
-    pageSettings: {
-                loadImages:  false,        // The WebPage instance used by Casper will
-                loadPlugins: false         // use these settings
-            
-    },
-        logLevel: "info",              // Only "info" level messages will be logged
-        verbose: true                  // log messages will be printed out to the console
-
+        "node_modules/jquery/dist/jquery.min.js"
+    ]
 });
 casper.options.waitTimeout = 3000;
-var links;
+var pups;
+var body;
 
-// function getLinks() {
-//     // Scrape the links from top-right nav of the website
-//     var links = document.querySelectorAll('ul.navigation li a');
-//     return Array.prototype.map.call(links, function (e) {
-//         return e.getAttribute('href')
-//     });
-// }
+function getPups() {
+    var pups = [];
+    $('.adoptablePets-item').each(function(){
+        var pup = {};
+        pup.name = $( this ).find('.pet-name-container h2 a').text().trim();
+        pup.breed = $( this ).find('.breed').text().trim();
+        pup.specs = $( this ).find('.specs').text().trim();
+        pup.url = location.host + $( this ).find('.pet-name-container h2 a').attr('href');
+        pups.push(pup);
+
+    })
+    return pups;
+}
 
 // Opens casperjs homepage
-casper.start('http://casperjs.org/');
+casper.start('https://www.petfinder.com/pet-search?location=durham%2C+nc&animal=dog&breed=&age=baby');
 casper.waitFor(function check() {
     return this.evaluate(function() {
-                return document.querySelectorAll('ul.your-list li').length > 2;
-            
+                return document.querySelectorAll('.pet-name-container').length > 1;
     });
 
 }, function then() {    // step to execute when check() is ok
-    this.captureSelector('yoursitelist.png', 'ul.your-list');
+    pups = this.evaluate(getPups);
 }, function timeout() { // step to execute if check has failed
-    this.echo("I can't haz my screenshot.").exit();
+    this.echo("No pups found").exit();
 });
 
-
-// casper.then(function () {
-//     links = this.evaluate(getLinks);
-// });
-
 casper.run(function () {
-    for(var i in links) {
-        console.log(links[i]);
+    for(var i = 0; i < pups.length; i++){
+        for(var property in pups[i]){
+            var pupDetails = property + ': ' + pups[i][property];
+            console.log(pupDetails);
+        }
+        console.log('\n');
     }
     casper.done();
 });
