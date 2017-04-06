@@ -1,12 +1,15 @@
-<div id="gallery">
-    <ul id="grid">
-        <% @pups.each do |pup| %>
-            <li>
-              <h2><%= pup.title %> </h2>
-              <%= link_to image_tag(pup.img), pup.url %>
-              <span><%= pup.description %>
-            </li>
-            <li><%= pup.description %></li>
-    <% end %>
-    </ul>
-</div>
+<h1 style="text-align:center;">My Daily Pups</h1>
+ 
+<table>
+  
+<% @pups.each do |pup| %>
+  <tr>
+    <td style="text-align:center;"><%= link_to image_tag(pup.img), pup.url %></td>
+    <td>
+      <h2><%= pup.title %></h2>
+      <span><%= pup.description  %></span>
+    </td>
+  </tr>
+<% end %>
+
+</table>
