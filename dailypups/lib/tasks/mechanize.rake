@@ -8,8 +8,6 @@ namespace :mechanize do
     # to once every half-second.  
     agent.history_added = Proc.new { sleep 0.5 }
     
-    # page = agent.get("https://www.petfinder.com/pet-search?location=durham%2C+nc&animal=dog&breed=&age=baby")
-    
     page = agent.get("https://www.petfinder.com")
     binding.pry
     

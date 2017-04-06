@@ -13,7 +13,7 @@ namespace :nokogiri do
       url = base_url + "/search/pet"
       
       page = Nokogiri::HTML(open(url))  
-      # binding.pry
+      binding.pry
       
       links = page.css(".result-title").map{ |result| result.attr('href') }
       
