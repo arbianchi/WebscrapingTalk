@@ -42,5 +42,4 @@ casper.run(function () {
         }
         console.log('\n');
     }
-    casper.done();
 });

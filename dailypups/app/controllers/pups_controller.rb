@@ -1,5 +1,5 @@
 class PupsController < ApplicationController
     def index
-        @pups = []
+        @pups = Pup.all
     end
 end

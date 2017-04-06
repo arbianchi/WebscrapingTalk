@@ -4,17 +4,40 @@ namespace :nokogiri do
         # require 'open-uri'
         # require 'nokogiri'
 
-        # https://www.petfinder.com/pet-search?location=durham%2C+nc&animal=dog&breed=&age=baby&filtersUpdated=false&distance=300&name=&page_size=1146
-        url = "https://raleigh.craigslist.org/search/pet"
-        page = Nokogiri::HTML(open(url))  
-        binding.pry
-        page.css('td b a').each do |line|
-            puts line.text  # "Spanish" 
-            Pup.create(
-                description: line.text,
-                img: line.text,
-                url: line.text
-            )
+        cities = [ 'raleigh', 'asheville', 'boone' ]
+        
+        cities.each do |city|
+          base_url = "https://#{city}.craigslist.org" 
+          search_terms = [ 'pup', 'dog' ]
+          
+          url = base_url + "/search/pet"
+          
+          page = Nokogiri::HTML(open(url))  
+          binding.pry
+          
+          links = page.css(".result-title").map{ |result| result.attr('href') }
+          
+          links.each do |link|
+            result_url = base_url + link
+            page = Nokogiri::HTML(open(result_url))  
+            
+            description = page.css("#postingbody").text
+            if search_terms.any? { |term| description.downcase.include? term }
+              
+              title = page.css("#titletextonly").text
+              img = page.css(".slide img").present? ? page.css(".slide img").first.attr('src') : ''
+              
+              Pup.create!( 
+                          title: title,
+                          description: description,
+                          img: img,
+                          url: result_url
+                        )
+              puts 'Found a pup!'
+            else
+              puts 'No pup found.'
+            end
+          end
         end
     end
 end
